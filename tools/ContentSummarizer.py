@@ -2,6 +2,7 @@ from langchain_ollama import OllamaLLM
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.docstore.document import Document
+from langchain_core.prompts import PromptTemplate
 
 import asyncio
 import os
@@ -29,7 +30,7 @@ class ContentSummarizer:
         docs = [Document(page_content=t) for t in texts]
         chain = load_summarize_chain(
             llm=self.llm, 
-            chain_type='map_reduce'
+            chain_type='refine'
             )
         summary = chain.run(docs)
         

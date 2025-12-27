@@ -12,11 +12,6 @@ def write_report(url:str, text: str) -> str:
     filename = f"Daily_PressRelease_Report_{yearMonth}{day}.txt"
     filepath = "./reports/"
     
-    # check whether report foler exist.
-    folder = Path("filepath")
-    if not folder.exists():
-        folder.mkdir(parents=True, exist_ok=True)
-    
     # generate report in text file.
     with open(os.path.join(filepath, filename), "w") as f:
         f.write(text)

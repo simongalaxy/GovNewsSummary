@@ -31,7 +31,7 @@ class ReportGenerator:
         docs = [Document(page_content=t) for t in texts]
         chain = load_summarize_chain(
             llm=self.llm, 
-            chain_type='map_reduce'
+            chain_type='refine'
             )
         report = chain.run(docs)
         
