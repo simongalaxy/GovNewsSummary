@@ -1,5 +1,5 @@
 from langchain_ollama import OllamaLLM
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.docstore.document import Document
 
@@ -9,30 +9,44 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class ContentSummarizer:
-    def __init__(self): 
-        self.model = os.getenv("OLLAMA_SUMMARIZATION_MODEL")
+    def __init__(self, logger):
+        self.logger = logger 
+        self.modelName = os.getenv("OLLAMA_SUMMARIZATION_MODEL")
         self.llm = OllamaLLM(
-            model=self.model,
-            temperature=0.3
+            model=self.modelName,
+            temperature=0
         )
-        self.text_splitter = CharacterTextSplitter()
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=2000,
+            chunk_overlap=100,
+            separators=["\n\n", "\n", ".", " ", ""]
+        )
 
     
     async def summarize_content(self, content: str):
         texts = self.text_splitter.split_text(content)
+        self.logger.info(f"total no. of text splitted: {len(texts)}")
         docs = [Document(page_content=t) for t in texts]
-        chain = load_summarize_chain(llm=self.llm, chain_type='map_reduce')
+        chain = load_summarize_chain(
+            llm=self.llm, 
+            chain_type='map_reduce'
+            )
+        summary = chain.run(docs)
         
-        return chain.run(docs)
+        self.logger.info("Original Press Release:\n")
+        self.logger.info(content)
+        self.logger.info("-"*100)
+        self.logger.info("Summary:\n")
+        self.logger.info(summary)
+        self.logger.info("*"*100)
+        self.logger.info(f"Data type of summary: {type(summary)}")
+        
+        return summary
     
         
     async def summarize_all_news_content(self, documents):
-        tasks = [self.summarize_content(content=document.page_content) for document in documents]
-        results = await asyncio.gather(*tasks)
+        tasks = [self.summarize_content(content=document[0].page_content.strip()) for document in documents]
+        summarized_texts = await asyncio.gather(*tasks)
         
-        print(f"Total news page scraped: {len(results)}")
-        for result in results:
-            print(result)
-        
-        return results
+        return summarized_texts
         

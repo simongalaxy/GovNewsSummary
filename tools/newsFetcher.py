@@ -4,7 +4,7 @@ import requests
 import re
 import asyncio
 
-def fetch_news_urls(url: str) -> list[str]:
+def fetch_news_urls(url: str, logger) -> list[str]:
     response = requests.get(url=url)
     soup = BeautifulSoup(response.text, "lxml")
     pattern = re.compile(r"^P.*\.htm$")
@@ -16,14 +16,14 @@ def fetch_news_urls(url: str) -> list[str]:
         postFix = href.split("/")[-1]
         if pattern.match(postFix):
             url = f"https://www.info.gov.hk{href}"
-            print(url)
+            logger.info(url)
             links.append(url)
     
     return links
 
 
 async def fetch_news_content(url: str):
-    bst_strainer = SoupStrainer("span", {"id": "pressrelease"})
+    bst_strainer = SoupStrainer("span", id=re.compile(r"^(PRHeadlineSpan|pressrelease)"))
     loader = WebBaseLoader(
         web_path=(url),
         bs_kwargs={"parse_only": bst_strainer},
@@ -35,9 +35,5 @@ async def fetch_news_content(url: str):
 async def fetch_all_news(urls: list[str]):
     tasks = [fetch_news_content(url=url) for url in urls]
     results = await asyncio.gather(*tasks)
-    
-    print(f"Total news page scraped: {len(results)}")
-    # for result in results:
-    #     print(result)
-       
+   
     return results
