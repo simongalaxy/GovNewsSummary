@@ -331,6 +331,7 @@ dependencies = [
     { name = "langchain-community" },
     { name = "langchain-ollama" },
     { name = "lxml" },
+    { name = "pydantic" },
     { name = "transformers" },
 ]
 
@@ -342,6 +343,7 @@ requires-dist = [
     { name = "langchain-community", specifier = ">=0.4.1" },
     { name = "langchain-ollama", specifier = ">=1.0.1" },
     { name = "lxml", specifier = ">=6.0.2" },
+    { name = "pydantic", specifier = ">=2.12.5" },
     { name = "transformers", specifier = ">=4.57.3" },
 ]
 
