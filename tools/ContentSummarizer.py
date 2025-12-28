@@ -22,6 +22,18 @@ class ContentSummarizer:
             chunk_overlap=100,
             separators=["\n\n", "\n", ".", " ", ""]
         )
+        # self.detailed_prompt = PromptTemplate(
+        #     input_variables=["text"],
+        #     template="""
+        #     Write a **detailed, multi-paragraph summary** of the following text.
+        #     Include all important context, numbers, name and implications.
+            
+        #     Text:
+        #     {text}
+            
+        #     Detailed Summary:
+        #     """
+        # )
 
     
     async def summarize_content(self, content: str):
@@ -30,7 +42,9 @@ class ContentSummarizer:
         docs = [Document(page_content=t) for t in texts]
         chain = load_summarize_chain(
             llm=self.llm, 
-            chain_type='refine'
+            chain_type='refine',
+            # question_prompt=self.detailed_prompt,
+            # refine_prompt=self.detailed_prompt,
             )
         summary = chain.run(docs)
         
