@@ -29,7 +29,7 @@ def main():
         news_urls = fetch_news_urls(url=daily_url, logger=logger)
         results = asyncio.run(fetch_all_news(urls=news_urls))
         
-         logger.info(f"Total news page scraped: {len(results)}")
+        logger.info(f"Total news page scraped: {len(results)}")
         # record the results in logger.
         for result in results:
             logger.info(f"Metadata: \n%s", pformat(result[0].metadata))
