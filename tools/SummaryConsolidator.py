@@ -17,7 +17,7 @@ class SummaryConsolidator:
             You are a report generator.
 
             You will receive a list of summaries.
-            Your task is to merge them into a single, coherent, comprehensive and multi-paragraph Markdown report.
+            Your task is to merge them into a single, coherent, comprehensive, categorized and multi-paragraph Markdown report.
 
             ### Requirements
             - Produce a clean, structured Markdown document.
@@ -25,6 +25,7 @@ class SummaryConsolidator:
             - Improve clarity and flow.
             - Add a short introduction and conclusion.
             - Keep the tone neutral and factual.
+            - Group all the summaries by its nature.
             - Do NOT compress. Write in multiple paragraphs.
 
             ### Input summaries:
